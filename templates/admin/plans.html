@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Plans — TrainMate Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>💳 Membership Plans</h1>
+</div>
+
+<div class="two-col">
+  <div class="section-card">
+    <h3>Current Plans</h3>
+    {% for p in plans %}
+    <div class="plan-row">
+      <div><strong>{{ p.name }}</strong> — ₹{{ p.price }} / {{ p.duration_days }} days</div>
+      <ul>{% for f in p.features | tojson | replace('"','') | replace('[','') | replace(']','') | replace('\\n','') %}{% endfor %}
+        {% set features = p.features | tojson %}
+      </ul>
+    </div>
+    {% else %}
+    <p class="empty-state">No plans yet. Add one!</p>
+    {% endfor %}
+  </div>
+
+  <div class="section-card">
+    <h3>Add New Plan</h3>
+    <form method="POST" action="{{ url_for('admin_add_plan') }}" class="form-grid">
+      <div class="form-group"><label>Plan Name</label><input type="text" name="name" placeholder="Gold" required /></div>
+      <div class="form-row">
+        <div class="form-group"><label>Price (₹)</label><input type="number" name="price" step="0.01" required /></div>
+        <div class="form-group"><label>Duration (days)</label><input type="number" name="duration_days" required /></div>
+      </div>
+      <div class="form-group">
+        <label>Features (one per line)</label>
+        <textarea name="features" rows="5" placeholder="Gym Access&#10;Locker Room&#10;1 PT Session"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Add Plan</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

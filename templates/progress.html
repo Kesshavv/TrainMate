@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Progress — TrainMate{% endblock %}
+{% block extra_head %}<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>📈 Progress Tracker</h1>
+  <p>Every kilo counts. Stay consistent.</p>
+</div>
+
+<div class="two-col">
+  <div class="section-card">
+    <h3>Log Today's Stats</h3>
+    <form method="POST" class="form-grid">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ today }}" required />
+      </div>
+      <div class="form-group">
+        <label>Body Weight (kg)</label>
+        <input type="number" name="body_weight" step="0.1" placeholder="72.5" required />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Body Fat %</label>
+          <input type="number" name="body_fat" step="0.1" placeholder="15.0" />
+        </div>
+        <div class="form-group">
+          <label>Calories Today</label>
+          <input type="number" name="calories_consumed" placeholder="2800" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea name="notes" placeholder="How did you feel today?" rows="2"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Save Progress</button>
+    </form>
+  </div>
+
+  <div class="section-card">
+    <h3>Recent Logs</h3>
+    {% if logs %}
+    <div class="progress-list">
+      {% for p in logs[:10] %}
+      <div class="progress-entry">
+        <span class="pe-date">{{ p.date.strftime('%d %b') }}</span>
+        <span class="pe-weight">{{ p.body_weight }} kg</span>
+        {% if p.body_fat %}<span class="pe-fat">{{ p.body_fat }}% BF</span>{% endif %}
+        {% if p.calories_consumed %}<span class="pe-cal">{{ p.calories_consumed }} kcal</span>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">Start logging to see your progress! 💪</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="charts-row mt-2">
+  <div class="chart-card">
+    <h3>Weight Over Time</h3>
+    <canvas id="weightChart" height="100"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>Calorie Intake</h3>
+    <canvas id="calChart" height="100"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const labels  = {{ chart_labels  | safe }};
+const weights = {{ chart_weights | safe }};
+const cals    = {{ chart_cals    | safe }};
+
+const chartOpts = (color) => ({
+  responsive: true,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { ticks: { color: '#888' }, grid: { color: '#1e1e1e' } },
+    y: { ticks: { color: '#888' }, grid: { color: '#1e1e1e' } }
+  }
+});
+
+if (labels.length) {
+  new Chart(document.getElementById('weightChart'), {
+    type: 'line',
+    data: { labels, datasets: [{ data: weights, borderColor: '#e8ff47', backgroundColor: 'rgba(232,255,71,0.07)', tension: 0.4, fill: true, pointBackgroundColor: '#e8ff47' }] },
+    options: chartOpts('#e8ff47')
+  });
+
+  new Chart(document.getElementById('calChart'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: cals, backgroundColor: 'rgba(71,255,209,0.6)', borderColor: '#47ffd1', borderWidth: 1 }] },
+    options: chartOpts('#47ffd1')
+  });
+} else {
+  ['weightChart','calChart'].forEach(id => {
+    const c = document.getElementById(id);
+    c.parentElement.innerHTML += '<p class="chart-empty">Log progress to see your chart</p>';
+    c.style.display = 'none';
+  });
+}
+</script>
+{% endblock %}

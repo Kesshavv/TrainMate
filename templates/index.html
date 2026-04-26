@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}TrainMate — Your Fitness Partner{% endblock %}
+
+{% block content %}
+<div class="landing">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🏆 #1 Gym Management App</div>
+      <h1 class="hero-title">
+        Train.<br>Track.<br><span class="accent">Dominate.</span>
+      </h1>
+      <p class="hero-sub">
+        TrainMate helps you log workouts, track progress, follow personalized diet plans,
+        and crush every fitness goal — all in one powerful dashboard.
+      </p>
+      <div class="hero-actions">
+        <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg">Get Started Free</a>
+        <a href="{{ url_for('login') }}"  class="btn btn-ghost  btn-lg">Log In</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="stats-card">
+        <div class="stat"><span class="stat-num">12K+</span><span class="stat-label">Members</span></div>
+        <div class="stat"><span class="stat-num">98K+</span><span class="stat-label">Workouts Logged</span></div>
+        <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Rating</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <h2 class="section-title">Everything you need to <span class="accent">level up</span></h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🏋️</div>
+        <h3>Workout Logger</h3>
+        <p>Log sets, reps, weights for every muscle group. Get AI-powered suggestions based on your goal.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Progress Charts</h3>
+        <p>Visual weight and calorie tracking over time. See your transformation with beautiful graphs.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🥗</div>
+        <h3>Diet Plans</h3>
+        <p>Tailored bulking, cutting, and maintenance meal plans with macro breakdowns.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚖️</div>
+        <h3>BMI Calculator</h3>
+        <p>Instant BMI analysis with health category and personalized recommendations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Admin Panel</h3>
+        <p>Manage members, assign trainers, set membership plans — full gym control.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Goal Tracking</h3>
+        <p>Set bulk, cut, or general fitness goals and get a tailored workout & diet experience.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing">
+    <h2 class="section-title">Simple <span class="accent">Pricing</span></h2>
+    <div class="pricing-grid">
+      <div class="plan-card">
+        <div class="plan-name">Basic</div>
+        <div class="plan-price">₹499<span>/mo</span></div>
+        <ul class="plan-features">
+          <li>✓ Gym Access</li>
+          <li>✓ Locker Room</li>
+          <li>✓ App Access</li>
+        </ul>
+        <a href="{{ url_for('signup') }}" class="btn btn-outline">Start Now</a>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge">POPULAR</div>
+        <div class="plan-name">Standard</div>
+        <div class="plan-price">₹1,199<span>/3 mo</span></div>
+        <ul class="plan-features">
+          <li>✓ Everything in Basic</li>
+          <li>✓ 1 PT Session/month</li>
+          <li>✓ Diet Consultation</li>
+        </ul>
+        <a href="{{ url_for('signup') }}" class="btn btn-primary">Start Now</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">₹3,999<span>/yr</span></div>
+        <ul class="plan-features">
+          <li>✓ Unlimited Access</li>
+          <li>✓ Personal Trainer</li>
+          <li>✓ Diet Plan</li>
+          <li>✓ Body Composition</li>
+          <li>✓ Sauna</li>
+        </ul>
+        <a href="{{ url_for('signup') }}" class="btn btn-outline">Start Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <p>⚡ TrainMate © 2024 — Built by <a href="https://github.com/Kesshavv" target="_blank">Kesshavv</a></p>
+  </footer>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Members — TrainMate Admin{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>👥 All Members</h1>
+  <a href="{{ url_for('admin_add_member') }}" class="btn btn-primary">+ Add Member</a>
+</div>
+
+<div class="section-card">
+  <table class="data-table">
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Role</th><th>Plan</th><th>Goal</th><th>Trainer</th><th>Expires</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for m in members %}
+      <tr>
+        <td><strong>{{ m.name }}</strong></td>
+        <td>{{ m.email }}</td>
+        <td><span class="badge">{{ m.role }}</span></td>
+        <td>{{ m.membership_plan | capitalize }}</td>
+        <td>{{ m.goal | capitalize }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('assign_trainer', uid=m.id) }}" style="display:inline">
+            <select name="trainer_id" onchange="this.form.submit()" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:3px 6px;border-radius:4px">
+              <option value="">None</option>
+              {% for t in trainers %}
+              <option value="{{ t.id }}" {% if m.trainer_id == t.id %}selected{% endif %}>{{ t.name }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+        <td>{{ m.membership_expiry.strftime('%d %b %Y') if m.membership_expiry else '—' }}</td>
+        <td>
+          <a href="{{ url_for('admin_delete_member', uid=m.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete {{ m.name }}?')">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

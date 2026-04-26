@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}BMI Calculator — TrainMate{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>⚖️ BMI Calculator</h1>
+  <p>Know your body. Own your journey.</p>
+</div>
+
+<div class="two-col">
+  <div class="section-card">
+    <h3>Calculate Your BMI</h3>
+    <form method="POST" class="form-grid">
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input type="number" name="weight" step="0.1" placeholder="70" required value="{{ result.weight if result }}" />
+      </div>
+      <div class="form-group">
+        <label>Height (cm)</label>
+        <input type="number" name="height" step="0.1" placeholder="175" required value="{{ result.height if result }}" />
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Calculate BMI</button>
+    </form>
+  </div>
+
+  <div class="section-card">
+    {% if result %}
+    <div class="bmi-result">
+      <div class="bmi-number">{{ result.bmi }}</div>
+      <div class="bmi-cat bmi-{{ result.category | lower | replace(' ','') }}">{{ result.category }}</div>
+      <div class="bmi-scale">
+        <div class="scale-bar">
+          <div class="scale-fill" style="width: {{ [[(result.bmi - 10) / 30 * 100, 0] | max, 100] | min }}%"></div>
+          <div class="scale-marker" style="left: {{ [[(result.bmi - 10) / 30 * 100, 0] | max, 100] | min }}%"></div>
+        </div>
+        <div class="scale-labels">
+          <span>Underweight<br>&lt;18.5</span>
+          <span>Normal<br>18.5–25</span>
+          <span>Overweight<br>25–30</span>
+          <span>Obese<br>&gt;30</span>
+        </div>
+      </div>
+      <div class="bmi-advice">
+        {% if result.category == 'Underweight' %}<p>Consider increasing calorie intake and strength training to build lean mass.</p>
+        {% elif result.category == 'Normal' %}<p>Great job! Maintain your lifestyle with balanced nutrition and regular exercise.</p>
+        {% elif result.category == 'Overweight' %}<p>A slight calorie deficit with cardio 3–4×/week can help reach a healthy BMI.</p>
+        {% else %}<p>Consult a healthcare professional and start a structured diet + exercise plan.</p>{% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:3rem">
+      <p style="font-size:3rem">⚖️</p>
+      <p>Enter your details to calculate BMI</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- BMI Info Table -->
+<div class="section-card mt-2">
+  <h3>BMI Categories</h3>
+  <table class="data-table">
+    <thead><tr><th>Category</th><th>BMI Range</th><th>Recommendation</th></tr></thead>
+    <tbody>
+      <tr><td><span class="bmi-Underweight">Underweight</span></td><td>&lt; 18.5</td><td>Increase calories; strength train</td></tr>
+      <tr><td><span class="bmi-Normal">Normal</span></td><td>18.5 – 24.9</td><td>Maintain current habits</td></tr>
+      <tr><td><span class="bmi-Overweight">Overweight</span></td><td>25 – 29.9</td><td>Calorie deficit + cardio</td></tr>
+      <tr><td><span class="bmi-Obese">Obese</span></td><td>≥ 30</td><td>Consult a healthcare professional</td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

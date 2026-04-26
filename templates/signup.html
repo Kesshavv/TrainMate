@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — TrainMate{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card wide">
+    <div class="auth-brand">⚡ TrainMate</div>
+    <h2>Create Your Account</h2>
+    <p class="auth-sub">Start your transformation today</p>
+
+    <form method="POST" class="auth-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" name="name" placeholder="Your Name" required />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@email.com" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Min 8 characters" required />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" name="age" placeholder="25" min="10" max="100" />
+        </div>
+        <div class="form-group">
+          <label>Height (cm)</label>
+          <input type="number" name="height" placeholder="175" step="0.1" />
+        </div>
+        <div class="form-group">
+          <label>Weight (kg)</label>
+          <input type="number" name="weight" placeholder="70" step="0.1" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Fitness Goal</label>
+        <select name="goal">
+          <option value="general">General Fitness</option>
+          <option value="bulk">Bulk (Gain Muscle)</option>
+          <option value="cut">Cut (Lose Fat)</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+    </form>
+
+    <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Log In</a></p>
+  </div>
+</div>
+{% endblock %}

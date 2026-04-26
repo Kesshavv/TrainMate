@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Profile — TrainMate{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>👤 My Profile</h1>
+  <p>Update your info to get better recommendations</p>
+</div>
+
+<div class="two-col">
+  <div class="section-card">
+    <div class="profile-avatar">{{ user.name[0].upper() }}</div>
+    <h3 style="text-align:center;margin-top:.5rem">{{ user.name }}</h3>
+    <p style="text-align:center;color:#888">{{ user.email }}</p>
+    <div class="profile-badges">
+      <span class="badge">{{ user.role | capitalize }}</span>
+      <span class="badge">{{ user.membership_plan | capitalize }} Plan</span>
+      <span class="badge">Goal: {{ user.goal | capitalize }}</span>
+    </div>
+    <div class="profile-stats">
+      <div><strong>{{ user.workouts | length }}</strong><br><small>Workouts</small></div>
+      <div><strong>{{ user.weight or '—' }}</strong><br><small>kg</small></div>
+      <div><strong>{{ user.height or '—' }}</strong><br><small>cm</small></div>
+      <div><strong>Joined</strong><br><small>{{ user.joined_on.strftime('%b %Y') if user.joined_on else '—' }}</small></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h3>Edit Profile</h3>
+    <form method="POST" class="form-grid">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="name" value="{{ user.name }}" required />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" name="age" value="{{ user.age or '' }}" />
+        </div>
+        <div class="form-group">
+          <label>Height (cm)</label>
+          <input type="number" name="height" step="0.1" value="{{ user.height or '' }}" />
+        </div>
+        <div class="form-group">
+          <label>Weight (kg)</label>
+          <input type="number" name="weight" step="0.1" value="{{ user.weight or '' }}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Fitness Goal</label>
+        <select name="goal">
+          <option value="general" {% if user.goal == 'general' %}selected{% endif %}>General Fitness</option>
+          <option value="bulk"    {% if user.goal == 'bulk'    %}selected{% endif %}>Bulk</option>
+          <option value="cut"     {% if user.goal == 'cut'     %}selected{% endif %}>Cut</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Save Changes</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

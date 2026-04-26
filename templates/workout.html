@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Workouts — TrainMate{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>🏋️ Workout Logger</h1>
+  <p>Track every rep. Every set. Every PR.</p>
+</div>
+
+<div class="two-col">
+  <!-- Log form -->
+  <div class="section-card">
+    <h3>Log a Workout</h3>
+    <form method="POST" class="form-grid" id="workoutForm">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ today }}" required />
+      </div>
+      <div class="form-group">
+        <label>Muscle Group</label>
+        <select name="muscle_group" id="muscleSelect" required onchange="loadSuggestions()">
+          <option value="">-- Select --</option>
+          <option>Chest</option><option>Back</option><option>Legs</option>
+          <option>Shoulders</option><option>Arms</option><option>Core</option><option>Cardio</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Exercise</label>
+        <input type="text" name="exercise" id="exerciseInput" placeholder="e.g. Bench Press" required />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Sets</label>
+          <input type="number" name="sets" placeholder="4" min="1" />
+        </div>
+        <div class="form-group">
+          <label>Reps</label>
+          <input type="number" name="reps" placeholder="10" min="1" />
+        </div>
+        <div class="form-group">
+          <label>Weight (kg)</label>
+          <input type="number" name="weight_kg" placeholder="60" step="0.5" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea name="notes" placeholder="Optional notes..." rows="2"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Log Workout 🔥</button>
+    </form>
+
+    <!-- Suggestions -->
+    <div id="suggestBox" class="suggest-box" style="display:none">
+      <h4>💡 Suggested Exercises</h4>
+      <div id="suggestList" class="suggest-list"></div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="section-card">
+    <h3>Workout History</h3>
+    {% if workouts %}
+    <div class="workout-list">
+      {% for w in workouts %}
+      <div class="workout-entry">
+        <div class="we-left">
+          <span class="tag tag-{{ w.muscle_group | lower }}">{{ w.muscle_group }}</span>
+          <strong>{{ w.exercise }}</strong>
+          <small>{{ w.date.strftime('%d %b %Y') }}</small>
+        </div>
+        <div class="we-stats">
+          <span>{{ w.sets }}×{{ w.reps }}</span>
+          <span>{{ w.weight_kg }} kg</span>
+          <a href="{{ url_for('delete_workout', wid=w.id) }}" class="del-btn" onclick="return confirm('Delete?')">✕</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">No workouts logged yet. Start today! 💪</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function loadSuggestions() {
+  const muscle = document.getElementById('muscleSelect').value;
+  if (!muscle || muscle === 'Core' || muscle === 'Cardio') {
+    document.getElementById('suggestBox').style.display = 'none';
+    return;
+  }
+  const res = await fetch('/api/workout-suggestions');
+  const data = await res.json();
+  const exercises = data[muscle] || [];
+  if (!exercises.length) return;
+  document.getElementById('suggestBox').style.display = 'block';
+  document.getElementById('suggestList').innerHTML = exercises.map(e =>
+    `<button type="button" class="suggest-chip" onclick="pickExercise('${e.split(' ')[0]} ${e.split(' ')[1] || ''}')">${e}</button>`
+  ).join('');
+}
+
+function pickExercise(name) {
+  document.getElementById('exerciseInput').value = name.trim();
+}
+</script>
+{% endblock %}

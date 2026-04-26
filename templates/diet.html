@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Diet Plans — TrainMate{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>🥗 Diet Plans</h1>
+  <p>Fuel your goal: <strong class="accent">{{ user.goal | capitalize }}</strong></p>
+</div>
+
+<!-- Goal tabs -->
+<div class="tabs" id="dietTabs">
+  <button class="tab {% if user.goal == 'bulk' %}active{% endif %}"   onclick="showTab('bulk')">🏋️ Bulking</button>
+  <button class="tab {% if user.goal == 'cut' %}active{% endif %}"    onclick="showTab('cut')">🔥 Cutting</button>
+  <button class="tab {% if user.goal == 'general' %}active{% endif %}" onclick="showTab('general')">⚡ Maintenance</button>
+</div>
+
+<!-- BULKING PLAN -->
+<div class="tab-content" id="tab-bulk">
+  <div class="diet-header">
+    <h2>Bulking Diet Plan</h2>
+    <p>Goal: ~3000–3500 kcal/day · Protein: 180–200g · Carbs: 400g · Fat: 80–100g</p>
+  </div>
+  <div class="meals-grid">
+    <div class="meal-card">
+      <div class="meal-time">🌅 Meal 1 — 7:00 AM</div>
+      <h4>Pre-Workout Breakfast</h4>
+      <ul>
+        <li>6 whole eggs scrambled</li>
+        <li>4 slices whole wheat toast</li>
+        <li>1 banana + 1 glass whole milk</li>
+        <li>1 tbsp peanut butter</li>
+      </ul>
+      <div class="macros"><span>~800 kcal</span><span>45g P</span><span>90g C</span><span>30g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">🏋️ Meal 2 — 10:30 AM</div>
+      <h4>Post-Workout Shake</h4>
+      <ul>
+        <li>2 scoops whey protein</li>
+        <li>1 cup oats + 1 banana</li>
+        <li>250ml whole milk</li>
+        <li>1 tbsp honey</li>
+      </ul>
+      <div class="macros"><span>~600 kcal</span><span>55g P</span><span>70g C</span><span>10g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">☀️ Meal 3 — 1:00 PM</div>
+      <h4>Power Lunch</h4>
+      <ul>
+        <li>200g chicken breast (grilled)</li>
+        <li>1.5 cups basmati rice</li>
+        <li>Dal / chickpeas 1 cup</li>
+        <li>Mixed vegetable sabzi</li>
+      </ul>
+      <div class="macros"><span>~750 kcal</span><span>55g P</span><span>90g C</span><span>12g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">🌤️ Meal 4 — 4:00 PM</div>
+      <h4>Evening Snack</h4>
+      <ul>
+        <li>Greek yogurt 200g</li>
+        <li>Mixed nuts 30g (almonds, cashews)</li>
+        <li>2 boiled eggs</li>
+        <li>1 apple</li>
+      </ul>
+      <div class="macros"><span>~450 kcal</span><span>30g P</span><span>30g C</span><span>22g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">🌙 Meal 5 — 8:00 PM</div>
+      <h4>Dinner</h4>
+      <ul>
+        <li>200g paneer / fish / chicken</li>
+        <li>2 chapatis or 1 cup rice</li>
+        <li>Sabzi + salad</li>
+        <li>1 glass milk</li>
+      </ul>
+      <div class="macros"><span>~700 kcal</span><span>45g P</span><span>65g C</span><span>20g F</span></div>
+    </div>
+    <div class="meal-card highlight">
+      <div class="meal-time">🌛 Meal 6 — 10:30 PM</div>
+      <h4>Pre-Sleep Protein</h4>
+      <ul>
+        <li>1 cup cottage cheese (paneer)</li>
+        <li>1 scoop casein (optional)</li>
+        <li>1 tbsp almond butter</li>
+      </ul>
+      <div class="macros"><span>~350 kcal</span><span>30g P</span><span>10g C</span><span>18g F</span></div>
+    </div>
+  </div>
+  <div class="diet-tips">
+    <h4>💪 Bulking Tips</h4>
+    <p>Eat in a 300–500 kcal surplus. Prioritize compound lifts. Sleep 8+ hours. Drink 4L water daily. Track macros weekly.</p>
+  </div>
+</div>
+
+<!-- CUTTING PLAN -->
+<div class="tab-content" id="tab-cut" style="display:none">
+  <div class="diet-header">
+    <h2>Cutting Diet Plan</h2>
+    <p>Goal: ~1800–2200 kcal/day · Protein: 160–180g · Carbs: 180–220g · Fat: 50–60g</p>
+  </div>
+  <div class="meals-grid">
+    <div class="meal-card">
+      <div class="meal-time">🌅 Meal 1 — 7:00 AM</div>
+      <h4>Morning Lean Meal</h4>
+      <ul><li>4 egg whites + 1 whole egg</li><li>2 slices multigrain toast</li><li>Black coffee (no sugar)</li><li>Half grapefruit</li></ul>
+      <div class="macros"><span>~380 kcal</span><span>30g P</span><span>35g C</span><span>8g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">🏃 Meal 2 — 10:00 AM</div>
+      <h4>Post-Workout</h4>
+      <ul><li>1 scoop whey protein</li><li>½ cup oats</li><li>Water / 150ml skim milk</li></ul>
+      <div class="macros"><span>~320 kcal</span><span>35g P</span><span>32g C</span><span>4g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">☀️ Meal 3 — 1:00 PM</div>
+      <h4>Lean Lunch</h4>
+      <ul><li>150g grilled chicken / tuna</li><li>1 cup brown rice</li><li>Large salad (no dressing)</li></ul>
+      <div class="macros"><span>~480 kcal</span><span>45g P</span><span>50g C</span><span>8g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">🌤️ Meal 4 — 4:00 PM</div>
+      <h4>Snack</h4>
+      <ul><li>Low-fat Greek yogurt</li><li>Cucumber + carrot sticks</li></ul>
+      <div class="macros"><span>~200 kcal</span><span>20g P</span><span>18g C</span><span>3g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">🌙 Meal 5 — 8:00 PM</div>
+      <h4>Lean Dinner</h4>
+      <ul><li>200g fish / egg whites</li><li>Stir-fried veggies</li><li>1 chapati (optional)</li></ul>
+      <div class="macros"><span>~380 kcal</span><span>40g P</span><span>25g C</span><span>8g F</span></div>
+    </div>
+  </div>
+  <div class="diet-tips">
+    <h4>🔥 Cutting Tips</h4>
+    <p>Eat 300–500 kcal below maintenance. High protein to preserve muscle. Cardio 3–4×/week. Avoid sugar & processed food. Drink plenty of water.</p>
+  </div>
+</div>
+
+<!-- MAINTENANCE PLAN -->
+<div class="tab-content" id="tab-general" style="display:none">
+  <div class="diet-header">
+    <h2>Maintenance Diet Plan</h2>
+    <p>Goal: ~2200–2600 kcal/day · Balanced macros · Sustainable lifestyle</p>
+  </div>
+  <div class="meals-grid">
+    <div class="meal-card">
+      <div class="meal-time">🌅 Breakfast</div>
+      <h4>Balanced Start</h4>
+      <ul><li>3 eggs (any style)</li><li>2 toast + peanut butter</li><li>1 fruit + tea/coffee</li></ul>
+      <div class="macros"><span>~520 kcal</span><span>28g P</span><span>45g C</span><span>20g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">☀️ Lunch</div>
+      <h4>Wholesome Lunch</h4>
+      <ul><li>Dal + 1 cup rice</li><li>Sabzi + roti</li><li>Curd / buttermilk</li></ul>
+      <div class="macros"><span>~620 kcal</span><span>25g P</span><span>80g C</span><span>12g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">🌤️ Snack</div>
+      <h4>Afternoon Boost</h4>
+      <ul><li>Handful mixed nuts</li><li>1 fruit</li><li>Green tea</li></ul>
+      <div class="macros"><span>~260 kcal</span><span>8g P</span><span>22g C</span><span>14g F</span></div>
+    </div>
+    <div class="meal-card">
+      <div class="meal-time">🌙 Dinner</div>
+      <h4>Light Dinner</h4>
+      <ul><li>Grilled chicken / paneer</li><li>2 rotis + sabzi</li><li>Salad</li></ul>
+      <div class="macros"><span>~550 kcal</span><span>35g P</span><span>50g C</span><span>14g F</span></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).style.display = 'block';
+  event.target.classList.add('active');
+}
+// Show goal's tab by default
+document.addEventListener('DOMContentLoaded', () => {
+  const goal = '{{ user.goal }}';
+  showTab(goal === 'bulk' ? 'bulk' : goal === 'cut' ? 'cut' : 'general');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(goal === 'bulk' ? 'bulk' : goal === 'cut' ? 'cut' : 'maint')) {
+      t.classList.add('active');
+    }
+  });
+});
+</script>
+{% endblock %}

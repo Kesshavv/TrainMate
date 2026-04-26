@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}TrainMate{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  {% if session.user_id %}
+  <!-- Sidebar Nav -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚡</span>
+      <span class="brand-text">TrainMate</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+        <span class="nav-icon">🏠</span><span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('workout') }}" class="nav-link {% if request.endpoint == 'workout' %}active{% endif %}">
+        <span class="nav-icon">🏋️</span><span>Workouts</span>
+      </a>
+      <a href="{{ url_for('progress') }}" class="nav-link {% if request.endpoint == 'progress' %}active{% endif %}">
+        <span class="nav-icon">📈</span><span>Progress</span>
+      </a>
+      <a href="{{ url_for('diet') }}" class="nav-link {% if request.endpoint == 'diet' %}active{% endif %}">
+        <span class="nav-icon">🥗</span><span>Diet Plans</span>
+      </a>
+      <a href="{{ url_for('bmi_calc') }}" class="nav-link {% if request.endpoint == 'bmi_calc' %}active{% endif %}">
+        <span class="nav-icon">⚖️</span><span>BMI Calc</span>
+      </a>
+      <a href="{{ url_for('profile') }}" class="nav-link {% if request.endpoint == 'profile' %}active{% endif %}">
+        <span class="nav-icon">👤</span><span>Profile</span>
+      </a>
+      {% if session.user_role == 'admin' %}
+      <div class="nav-divider"></div>
+      <span class="nav-label">ADMIN</span>
+      <a href="{{ url_for('admin_dashboard') }}" class="nav-link {% if 'admin' in request.endpoint %}active{% endif %}">
+        <span class="nav-icon">🛡️</span><span>Admin Panel</span>
+      </a>
+      <a href="{{ url_for('admin_members') }}" class="nav-link">
+        <span class="nav-icon">👥</span><span>Members</span>
+      </a>
+      <a href="{{ url_for('admin_plans') }}" class="nav-link">
+        <span class="nav-icon">💳</span><span>Plans</span>
+      </a>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar">{{ session.user_name[0].upper() }}</div>
+        <div class="user-info">
+          <span class="user-name">{{ session.user_name }}</span>
+          <span class="user-role">{{ session.user_role }}</span>
+        </div>
+      </div>
+      <a href="{{ url_for('logout') }}" class="logout-btn">↩ Logout</a>
+    </div>
+  </aside>
+
+  <!-- Mobile top bar -->
+  <header class="topbar">
+    <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <span class="topbar-brand">⚡ TrainMate</span>
+  </header>
+  {% endif %}
+
+  <!-- Main content -->
+  <main class="{% if session.user_id %}main-content{% else %}full-content{% endif %}">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">
+              {{ message }}
+              <button onclick="this.parentElement.remove()">×</button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- GitHub Floating Badge -->
+  <a href="https://github.com/Kesshavv" target="_blank" class="github-float" title="GitHub: Kesshavv">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+    </svg>
+    <span>Kesshavv</span>
+  </a>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

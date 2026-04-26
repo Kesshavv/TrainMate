@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — TrainMate{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Hey, <span class="accent">{{ user.name.split()[0] }}</span> 👋</h1>
+  <p>{{ today.strftime('%A, %B %d %Y') }}</p>
+</div>
+
+<!-- Stat Cards -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-icon">⚖️</div>
+    <div class="stat-body">
+      <div class="stat-value">{{ user.weight or '—' }} <small>kg</small></div>
+      <div class="stat-label">Current Weight</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">📏</div>
+    <div class="stat-body">
+      <div class="stat-value">{{ bmi_value or '—' }}</div>
+      <div class="stat-label">BMI · <span class="bmi-{{ bmi_cat | lower | replace(' ','') }}">{{ bmi_cat }}</span></div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🏋️</div>
+    <div class="stat-body">
+      <div class="stat-value">{{ user.workouts | length }}</div>
+      <div class="stat-label">Total Workouts</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🎯</div>
+    <div class="stat-body">
+      <div class="stat-value">{{ user.goal | capitalize }}</div>
+      <div class="stat-label">Current Goal</div>
+    </div>
+  </div>
+  <div class="stat-card {% if user.membership_expiry and user.membership_expiry < today %}expired{% endif %}">
+    <div class="stat-icon">💳</div>
+    <div class="stat-body">
+      <div class="stat-value">{{ user.membership_plan | capitalize }}</div>
+      <div class="stat-label">Plan · Expires {{ user.membership_expiry.strftime('%d %b %Y') if user.membership_expiry else 'N/A' }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row -->
+<div class="charts-row">
+  <div class="chart-card">
+    <h3>Weight Progress (30 days)</h3>
+    <canvas id="weightChart" height="120"></canvas>
+  </div>
+  <div class="chart-card small">
+    <h3>Muscle Group Breakdown</h3>
+    <canvas id="muscleChart" height="160"></canvas>
+  </div>
+</div>
+
+<!-- Recent Workouts -->
+<div class="section-card">
+  <div class="section-head">
+    <h3>Recent Workouts</h3>
+    <a href="{{ url_for('workout') }}" class="btn btn-sm btn-primary">+ Log Workout</a>
+  </div>
+  {% if recent_workouts %}
+  <table class="data-table">
+    <thead>
+      <tr><th>Date</th><th>Muscle</th><th>Exercise</th><th>Sets</th><th>Reps</th><th>Weight</th></tr>
+    </thead>
+    <tbody>
+      {% for w in recent_workouts %}
+      <tr>
+        <td>{{ w.date.strftime('%d %b') }}</td>
+        <td><span class="tag tag-{{ w.muscle_group | lower }}">{{ w.muscle_group }}</span></td>
+        <td>{{ w.exercise }}</td>
+        <td>{{ w.sets }}</td>
+        <td>{{ w.reps }}</td>
+        <td>{{ w.weight_kg }} kg</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <p>No workouts yet. <a href="{{ url_for('workout') }}">Log your first session!</a></p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+  <a href="{{ url_for('workout') }}"  class="qa-btn">🏋️ Log Workout</a>
+  <a href="{{ url_for('progress') }}" class="qa-btn">📈 Log Progress</a>
+  <a href="{{ url_for('diet') }}"     class="qa-btn">🥗 View Diet</a>
+  <a href="{{ url_for('bmi_calc') }}" class="qa-btn">⚖️ BMI Calc</a>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const labels  = {{ chart_labels  | safe }};
+const weights = {{ chart_weights | safe }};
+const muscles = {{ muscle_counts | safe }};
+
+// Weight line chart
+if (labels.length) {
+  new Chart(document.getElementById('weightChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Weight (kg)',
+        data: weights,
+        borderColor: '#e8ff47',
+        backgroundColor: 'rgba(232,255,71,0.08)',
+        tension: 0.4,
+        pointBackgroundColor: '#e8ff47',
+        pointRadius: 4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#888' }, grid: { color: '#222' } },
+        y: { ticks: { color: '#888' }, grid: { color: '#222' } }
+      }
+    }
+  });
+} else {
+  document.getElementById('weightChart').parentElement.innerHTML += '<p class="chart-empty">Log progress to see chart</p>';
+  document.getElementById('weightChart').style.display = 'none';
+}
+
+// Donut chart – muscle groups
+const muscleKeys = Object.keys(muscles);
+if (muscleKeys.length) {
+  const colors = ['#e8ff47','#47ffd1','#ff6b6b','#a78bfa','#fbbf24','#34d399','#60a5fa'];
+  new Chart(document.getElementById('muscleChart'), {
+    type: 'doughnut',
+    data: {
+      labels: muscleKeys,
+      datasets: [{
+        data: muscleKeys.map(k => muscles[k]),
+        backgroundColor: colors.slice(0, muscleKeys.length),
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#aaa', boxWidth: 12, padding: 12 }
+        }
+      }
+    }
+  });
+} else {
+  document.getElementById('muscleChart').parentElement.innerHTML += '<p class="chart-empty">Log workouts to see breakdown</p>';
+  document.getElementById('muscleChart').style.display = 'none';
+}
+</script>
+{% endblock %}

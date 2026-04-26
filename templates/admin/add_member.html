@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Add Member — TrainMate{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>➕ Add New Member</h1>
+  <a href="{{ url_for('admin_members') }}" class="btn btn-ghost">← Back</a>
+</div>
+
+<div class="section-card" style="max-width:600px">
+  <form method="POST" class="form-grid">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="name" required />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" required />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" name="password" required />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Role</label>
+        <select name="role">
+          <option value="member">Member</option>
+          <option value="trainer">Trainer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Goal</label>
+        <select name="goal">
+          <option value="general">General</option>
+          <option value="bulk">Bulk</option>
+          <option value="cut">Cut</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Plan</label>
+        <select name="plan">
+          <option value="basic">Basic (30 days)</option>
+          <option value="standard">Standard (90 days)</option>
+          <option value="premium">Premium (365 days)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Age</label><input type="number" name="age" /></div>
+      <div class="form-group"><label>Height (cm)</label><input type="number" name="height" step="0.1" /></div>
+      <div class="form-group"><label>Weight (kg)</label><input type="number" name="weight" step="0.1" /></div>
+    </div>
+    <div class="form-group">
+      <label>Assign Trainer</label>
+      <select name="trainer_id">
+        <option value="">None</option>
+        {% for t in trainers %}
+        <option value="{{ t.id }}">{{ t.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary btn-full">Add Member</button>
+  </form>
+</div>
+{% endblock %}

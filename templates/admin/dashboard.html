@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Admin — TrainMate{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>🛡️ Admin Dashboard</h1>
+  <p>Manage your gym from here</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-body"><div class="stat-value">{{ total_members }}</div><div class="stat-label">Total Members</div></div></div>
+  <div class="stat-card"><div class="stat-icon">🏋️</div><div class="stat-body"><div class="stat-value">{{ total_trainers }}</div><div class="stat-label">Trainers</div></div></div>
+  <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-body"><div class="stat-value">{{ total_workouts }}</div><div class="stat-label">Total Workouts</div></div></div>
+  <div class="stat-card {% if expiring %}warn{% endif %}"><div class="stat-icon">⏰</div><div class="stat-body"><div class="stat-value">{{ expiring | length }}</div><div class="stat-label">Expiring This Week</div></div></div>
+</div>
+
+{% if expiring %}
+<div class="section-card alert-card">
+  <h3>⚠️ Memberships Expiring Soon</h3>
+  <div class="expiry-list">
+    {% for u in expiring %}
+    <div class="expiry-item">
+      <span>{{ u.name }}</span>
+      <span>{{ u.email }}</span>
+      <span class="expiry-date">Expires {{ u.membership_expiry.strftime('%d %b %Y') }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="section-card">
+  <div class="section-head">
+    <h3>Recent Members</h3>
+    <a href="{{ url_for('admin_add_member') }}" class="btn btn-sm btn-primary">+ Add Member</a>
+  </div>
+  <table class="data-table">
+    <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Goal</th><th>Joined</th><th>Expires</th></tr></thead>
+    <tbody>
+      {% for m in recent_members %}
+      <tr>
+        <td>{{ m.name }}</td>
+        <td>{{ m.email }}</td>
+        <td><span class="badge">{{ m.membership_plan | capitalize }}</span></td>
+        <td>{{ m.goal | capitalize }}</td>
+        <td>{{ m.joined_on.strftime('%d %b %Y') if m.joined_on else '—' }}</td>
+        <td class="{% if m.membership_expiry and m.membership_expiry < today %}text-danger{% endif %}">
+          {{ m.membership_expiry.strftime('%d %b %Y') if m.membership_expiry else '—' }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const today = new Date('{{ today }}');
+</script>
+{% endblock %}
