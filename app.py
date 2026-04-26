@@ -15,49 +15,66 @@ db = SQLAlchemy(app)
 # ── Models ───────────────────────────────────────────────────────────────────
 
 class User(db.Model):
-    id            = db.Column(db.Integer, primary_key=True)
-    name          = db.Column(db.String(100), nullable=False)
-    email         = db.Column(db.String(120), unique=True, nullable=False)
-    password      = db.Column(db.String(200), nullable=False)
-    role          = db.Column(db.String(20), default='member')   # member / admin / trainer
-    age           = db.Column(db.Integer)
-    height        = db.Column(db.Float)          # cm
-    weight        = db.Column(db.Float)          # kg
-    goal          = db.Column(db.String(50), default='general')  # bulk / cut / general
-    membership_plan   = db.Column(db.String(50), default='basic')
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    role = db.Column(db.String(20), default='member')
+    age = db.Column(db.Integer)
+    height = db.Column(db.Float)
+    weight = db.Column(db.Float)
+    goal = db.Column(db.String(50), default='general')
+    membership_plan = db.Column(db.String(50), default='basic')
     membership_expiry = db.Column(db.Date)
-    trainer_id    = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    joined_on     = db.Column(db.Date, default=date.today)
-    workouts      = db.relationship('Workout',  backref='user', lazy=True)
+    trainer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    joined_on = db.Column(db.Date, default=date.today)
+    workouts = db.relationship('Workout', backref='user', lazy=True)
     progress_logs = db.relationship('Progress', backref='user', lazy=True)
 
 class Workout(db.Model):
-    id           = db.Column(db.Integer, primary_key=True)
-    user_id      = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    date         = db.Column(db.Date, default=date.today)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date = db.Column(db.Date, default=date.today)
     muscle_group = db.Column(db.String(50))
-    exercise     = db.Column(db.String(100))
-    sets         = db.Column(db.Integer)
-    reps         = db.Column(db.Integer)
-    weight_kg    = db.Column(db.Float)
-    notes        = db.Column(db.Text)
-    created_at   = db.Column(db.DateTime, default=datetime.utcnow)
+    exercise = db.Column(db.String(100))
+    sets = db.Column(db.Integer)
+    reps = db.Column(db.Integer)
+    weight_kg = db.Column(db.Float)
+    notes = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Progress(db.Model):
-    id                = db.Column(db.Integer, primary_key=True)
-    user_id           = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    date              = db.Column(db.Date, default=date.today)
-    body_weight       = db.Column(db.Float)
-    body_fat          = db.Column(db.Float, nullable=True)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date = db.Column(db.Date, default=date.today)
+    body_weight = db.Column(db.Float)
+    body_fat = db.Column(db.Float, nullable=True)
     calories_consumed = db.Column(db.Integer, nullable=True)
-    notes             = db.Column(db.Text)
+    notes = db.Column(db.Text)
 
 class MembershipPlan(db.Model):
-    id           = db.Column(db.Integer, primary_key=True)
-    name         = db.Column(db.String(50), unique=True)
-    price        = db.Column(db.Float)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+    price = db.Column(db.Float)
     duration_days = db.Column(db.Integer)
-    features     = db.Column(db.Text)   # JSON list
+    features = db.Column(db.Text)
+
+# ── DB INIT (FIXED POSITION) ────────────────────────────────────────────────
+
+with app.app_context():
+    db.create_all()
+
+    # Create default admin
+    if not User.query.filter_by(email='admin@trainmate.com').first():
+        admin = User(
+            name='Admin',
+            email='admin@trainmate.com',
+            password=generate_password_hash('admin123'),
+            role='admin',
+            membership_expiry=date(2099, 12, 31)
+        )
+        db.session.add(admin)
+        db.session.commit()
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -89,10 +106,11 @@ def calc_bmi(weight, height):
 
 def bmi_category(b):
     if b is None: return 'N/A'
-    if b < 18.5:  return 'Underweight'
-    if b < 25.0:  return 'Normal'
-    if b < 30.0:  return 'Overweight'
+    if b < 18.5: return 'Underweight'
+    if b < 25.0: return 'Normal'
+    if b < 30.0: return 'Overweight'
     return 'Obese'
+
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 
