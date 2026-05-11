@@ -9,7 +9,7 @@
 
 ---
 
-## 🚀 Features
+# 🚀 Features
 
 ### 👤 Member Side
 - ✅ Signup / Login with hashed passwords
